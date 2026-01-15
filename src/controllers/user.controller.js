@@ -1,36 +1,51 @@
-let users = [];
+import User from "../models/user.model.js";
 
-export const getUsers = (req, res) => {
+export const getUsers = async (req, res, next) => {
+  try {
+    const users = await User.findAll();
+
     res.json({
-        success: true,
-        data: users,
-    })
-}
+      success: true,
+      data: users
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 export const createUser = async (req, res, next) => {
-    try{
-        const user = req.body;
+  try {
+    const { name, email } = req.body;
 
-        if(!user.name) {
-            throw new Error("Name required")
-        }
-
-        users.push(user);
-        res.status(201).json({
-            success: true,
-            data: user
-        });
-
-    }catch(error){
-        next(error)
+    if (!name) {
+      return res.status(400).json({
+        success: false,
+        message: "Name is required"
+      });
     }
-}
 
-export const deleteUser = (req, res) => {
+    const user = await User.create({ name, email });
+
+    res.status(201).json({
+      success: true,
+      data: user
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteUser = async (req, res, next) => {
+  try {
     const { id } = req.params;
-    users.splice(id, 1);
+
+    await User.destroy({ where: { id } });
+
     res.json({
-        success: true,
-        message: "User Deleted"
-    })
-}
+      success: true,
+      message: "User deleted"
+    });
+  } catch (err) {
+    next(err);
+  }
+};

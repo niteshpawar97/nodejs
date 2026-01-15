@@ -1,11 +1,10 @@
-const errorHendler = (err, req, res, next) => {
-console.error(err)
+const errorHandler = (err, req,res, next) => {
+    console.log(err)
 
-res.status(500).json({
-    success: false,
-    message: "Internal Server Error"
-})
-
+    res.status(500).json({
+        success: false,
+        message: 'internal server error'
+    })
 }
 
-export default errorHendler;
+export default errorHandler
